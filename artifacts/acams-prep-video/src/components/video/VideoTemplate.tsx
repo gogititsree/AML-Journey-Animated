@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVideoPlayer } from '@/lib/video';
 import { Scene1 } from './video_scenes/Scene1';
@@ -6,7 +7,7 @@ import { Scene3 } from './video_scenes/Scene3';
 import { Scene4 } from './video_scenes/Scene4';
 import { Scene5 } from './video_scenes/Scene5';
 
-const SCENE_DURATIONS = {
+export const SCENE_DURATIONS: Record<string, number> = {
   open: 5000,
   bsa: 7000,
   kyc: 7000,
@@ -14,8 +15,32 @@ const SCENE_DURATIONS = {
   close: 6000,
 };
 
-export default function VideoTemplate() {
-  const { currentScene } = useVideoPlayer({ durations: SCENE_DURATIONS });
+const SCENE_COMPONENTS: Record<string, React.ComponentType> = {
+  open: Scene1,
+  bsa: Scene2,
+  kyc: Scene3,
+  sar: Scene4,
+  close: Scene5,
+};
+
+export default function VideoTemplate({
+  durations = SCENE_DURATIONS,
+  loop = true,
+  onSceneChange,
+}: {
+  durations?: Record<string, number>;
+  loop?: boolean;
+  onSceneChange?: (sceneKey: string) => void;
+} = {}) {
+  const { currentScene, currentSceneKey } = useVideoPlayer({ durations, loop });
+
+  useEffect(() => {
+    onSceneChange?.(currentSceneKey);
+  }, [currentSceneKey, onSceneChange]);
+
+  const baseSceneKey = currentSceneKey.replace(/_r[12]$/, '') as keyof typeof SCENE_DURATIONS;
+  const sceneIndex = Object.keys(SCENE_DURATIONS).indexOf(baseSceneKey);
+  const SceneComponent = SCENE_COMPONENTS[baseSceneKey];
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-bg-dark text-text-inverse">
@@ -37,20 +62,16 @@ export default function VideoTemplate() {
       <motion.div
         className="absolute h-1 bg-accent z-10"
         animate={{
-          left: ['0%', '20%', '0%', '40%', '10%'][currentScene],
-          width: ['100%', '60%', '80%', '30%', '50%'][currentScene],
-          top: ['95%', '10%', '90%', '15%', '85%'][currentScene],
-          opacity: currentScene >= 4 ? 0 : 1,
+          left: ['0%', '20%', '0%', '40%', '10%'][sceneIndex] ?? '0%',
+          width: ['100%', '60%', '80%', '30%', '50%'][sceneIndex] ?? '100%',
+          top: ['95%', '10%', '90%', '15%', '85%'][sceneIndex] ?? '95%',
+          opacity: sceneIndex >= 4 ? 0 : 1,
         }}
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
       />
 
       <AnimatePresence initial={false} mode="wait">
-        {currentScene === 0 && <Scene1 key="open" />}
-        {currentScene === 1 && <Scene2 key="bsa" />}
-        {currentScene === 2 && <Scene3 key="kyc" />}
-        {currentScene === 3 && <Scene4 key="sar" />}
-        {currentScene === 4 && <Scene5 key="close" />}
+        {SceneComponent && <SceneComponent key={currentSceneKey} />}
       </AnimatePresence>
     </div>
   );
