@@ -1,0 +1,31 @@
+kind = "video"
+previewPath = "/acams-prep-video/"
+title = "ACAMS Certification & Interview Prep"
+version = "1.0.0"
+id = "artifacts/acams-prep-video"
+router = "path"
+
+[[integratedSkills]]
+name = "video-js"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/acams-prep-video/" ]
+localPort = 19676
+
+[services.development]
+run = "pnpm --filter @workspace/acams-prep-video run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/acams-prep-video", "run", "build" ]
+publicDir = "artifacts/acams-prep-video/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19676"
+BASE_PATH = "/acams-prep-video/"
