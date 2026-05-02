@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import VideoWithControls from "@/components/video/VideoWithControls";
 import QuizApp from "@/components/quiz/QuizApp";
-import { Play, BookOpen } from 'lucide-react';
+import MockTestApp from "@/components/quiz/MockTestApp";
+import { Play, BookOpen, ClipboardList } from 'lucide-react';
 
-type Tab = 'video' | 'quiz';
+type Tab = 'video' | 'quiz' | 'mock';
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('video');
@@ -32,6 +33,16 @@ export default function App() {
         >
           <BookOpen size={14} /> 200 Practice Questions
         </button>
+        <button
+          onClick={() => setTab('mock')}
+          className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+            tab === 'mock'
+              ? 'bg-amber-400 text-gray-900'
+              : 'text-white/50 hover:text-white hover:bg-white/10'
+          }`}
+        >
+          <ClipboardList size={14} /> 5 Mock Tests
+        </button>
       </div>
 
       {/* Content */}
@@ -41,6 +52,9 @@ export default function App() {
         </div>
         <div className={`absolute inset-0 overflow-y-auto ${tab === 'quiz' ? 'block' : 'hidden'}`}>
           <QuizApp />
+        </div>
+        <div className={`absolute inset-0 overflow-y-auto ${tab === 'mock' ? 'block' : 'hidden'}`}>
+          <MockTestApp />
         </div>
       </div>
     </div>
