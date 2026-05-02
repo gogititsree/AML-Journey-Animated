@@ -269,7 +269,7 @@ export default function QuizApp() {
             />
           </div>
           <span className="text-amber-400 text-sm font-bold tabular-nums shrink-0">
-            {score}/{attempted}
+            {score}/{questions.length}
           </span>
         </div>
       </div>

@@ -34,21 +34,29 @@ function useCardDeck(cards: FlashCard[]) {
     });
   }, [cards.length]);
 
-  const markKnown = useCallback(() => {
-    const id = cards[index]?.id;
+  const markKnown = useCallback((displayCards: FlashCard[], displayIndex: number) => {
+    const id = displayCards[displayIndex]?.id;
     if (!id) return;
     setKnown(s => new Set([...s, id]));
     setUnknown(s => { const n = new Set(s); n.delete(id); return n; });
-    go(1);
-  }, [cards, index, go]);
+    setFace('front');
+    setIndex(i => {
+      const next = i + 1;
+      return next >= cards.length ? 0 : next;
+    });
+  }, [cards.length]);
 
-  const markUnknown = useCallback(() => {
-    const id = cards[index]?.id;
+  const markUnknown = useCallback((displayCards: FlashCard[], displayIndex: number) => {
+    const id = displayCards[displayIndex]?.id;
     if (!id) return;
     setUnknown(s => new Set([...s, id]));
     setKnown(s => { const n = new Set(s); n.delete(id); return n; });
-    go(1);
-  }, [cards, index, go]);
+    setFace('front');
+    setIndex(i => {
+      const next = i + 1;
+      return next >= cards.length ? 0 : next;
+    });
+  }, [cards.length]);
 
   const reset = useCallback(() => {
     setIndex(0);
@@ -60,7 +68,7 @@ function useCardDeck(cards: FlashCard[]) {
   return { index, face, flip, go, known, unknown, markKnown, markUnknown, reset };
 }
 
-function shuffle<T>(arr: T[]): T[] {
+function shuffleArr<T>(arr: T[]): T[] {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -78,25 +86,35 @@ interface DeckProps {
 
 function Deck({ cards, chapterColor, chapterLabel, onBack }: DeckProps) {
   const [deckCards, setDeckCards] = useState(cards);
+  const [filterStillLearning, setFilterStillLearning] = useState(false);
   const { index, face, flip, go, known, unknown, markKnown, markUnknown, reset } = useCardDeck(deckCards);
-  const card = deckCards[index];
-  const total = deckCards.length;
-  const progress = ((index + 1) / total) * 100;
+
+  // When filter is active, only show "Still Learning" cards
+  const displayCards = filterStillLearning
+    ? deckCards.filter(c => unknown.has(c.id))
+    : deckCards;
+
+  const safeIndex = Math.min(index, Math.max(displayCards.length - 1, 0));
+  const card = displayCards[safeIndex];
+  const total = displayCards.length;
+  const progress = total > 0 ? ((safeIndex + 1) / total) * 100 : 0;
   const knownCount = known.size;
   const unknownCount = unknown.size;
-  const remaining = total - knownCount;
+  const remaining = deckCards.length - knownCount;
 
   const isKnown = card ? known.has(card.id) : false;
   const isUnknown = card ? unknown.has(card.id) : false;
 
   const handleShuffle = () => {
-    setDeckCards(shuffle(cards));
+    setDeckCards(shuffleArr(cards));
     reset();
+    setFilterStillLearning(false);
   };
 
-  if (!card) return null;
+  const handleMarkKnown = () => markKnown(displayCards, safeIndex);
+  const handleMarkUnknown = () => markUnknown(displayCards, safeIndex);
 
-  const lines = (face === 'front' ? card.front : card.back).split('\n');
+  const lines = card ? (face === 'front' ? card.front : card.back).split('\n') : [];
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(135deg,#0a0f1e,#0d1a2e,#0a1628)', fontFamily: 'var(--font-body)' }}>
@@ -110,21 +128,38 @@ function Deck({ cards, chapterColor, chapterLabel, onBack }: DeckProps) {
             <span className="text-white/20">·</span>
             <span className="text-sm font-semibold" style={{ color: chapterColor }}>{chapterLabel}</span>
           </div>
-          {/* Progress */}
+
+          {/* Progress bar */}
           <div className="flex items-center gap-3 mb-2">
             <div className="flex-1 bg-white/10 rounded-full h-1.5 overflow-hidden">
               <div className="h-full rounded-full transition-all duration-300" style={{ width: `${progress}%`, backgroundColor: chapterColor }} />
             </div>
-            <span className="text-white/40 text-xs tabular-nums shrink-0">{index + 1} / {total}</span>
+            <span className="text-white/40 text-xs tabular-nums shrink-0">{safeIndex + 1} / {total}</span>
           </div>
+
           {/* Stats row */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 flex-wrap">
             <div className="flex items-center gap-1.5 text-green-400 text-xs font-semibold">
               <CheckCircle size={12} /> {knownCount} got it
             </div>
-            <div className="flex items-center gap-1.5 text-red-400 text-xs font-semibold">
-              <XCircle size={12} /> {unknownCount} still learning
-            </div>
+
+            {/* FR-048: Still Learning filter toggle */}
+            <button
+              onClick={() => setFilterStillLearning(f => !f)}
+              disabled={unknownCount === 0 && !filterStillLearning}
+              className={`flex items-center gap-1.5 text-xs font-semibold transition-all px-2 py-0.5 rounded-full border ${
+                filterStillLearning
+                  ? 'bg-red-500/25 border-red-400/50 text-red-300'
+                  : unknownCount > 0
+                  ? 'border-red-400/20 text-red-400 hover:bg-red-500/15 hover:border-red-400/40'
+                  : 'border-white/10 text-white/20 cursor-not-allowed'
+              }`}
+              title={filterStillLearning ? 'Show all cards' : 'Filter to Still Learning only'}
+            >
+              <XCircle size={12} />
+              {filterStillLearning ? `Still Learning only (${unknownCount})` : `${unknownCount} still learning`}
+            </button>
+
             <div className="ml-auto flex items-center gap-1.5 text-white/30 text-xs">
               <Eye size={12} /> {remaining} remaining
             </div>
@@ -132,107 +167,126 @@ function Deck({ cards, chapterColor, chapterLabel, onBack }: DeckProps) {
         </div>
       </div>
 
-      {/* Card */}
+      {/* Card area */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-4">
         <div className="w-full max-w-2xl">
-          {/* Tap instruction */}
-          <p className="text-center text-white/25 text-xs mb-4 tracking-wide">
-            {face === 'front' ? 'TAP CARD TO REVEAL ANSWER' : 'TAP CARD TO FLIP BACK'}
-          </p>
 
-          {/* Card face — perspective container */}
-          <div
-            onClick={flip}
-            className="cursor-pointer select-none"
-            style={{ perspective: '1000px' }}
-          >
-            <div
-              style={{
-                transformStyle: 'preserve-3d',
-                transform: face === 'back' ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)',
-                position: 'relative',
-                minHeight: '260px',
-              }}
-            >
-              {/* FRONT */}
-              <div
-                style={{
-                  backfaceVisibility: 'hidden',
-                  WebkitBackfaceVisibility: 'hidden',
-                  position: face === 'back' ? 'absolute' : 'relative',
-                  inset: 0,
-                  borderRadius: '20px',
-                  background: `linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03))`,
-                  border: `1px solid ${chapterColor}40`,
-                  boxShadow: `0 0 40px ${chapterColor}15`,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '2rem',
-                  minHeight: '260px',
-                }}
+          {/* Empty state when filter active but no Still Learning cards remain */}
+          {filterStillLearning && displayCards.length === 0 ? (
+            <div className="text-center py-16 space-y-4">
+              <CheckCircle size={48} className="mx-auto text-green-400" />
+              <p className="text-green-300 font-bold text-xl">All caught up!</p>
+              <p className="text-white/40 text-sm">No cards left in your Still Learning pile.</p>
+              <button
+                onClick={() => setFilterStillLearning(false)}
+                className="mt-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-medium transition-all border border-white/10"
               >
-                <div className="text-xs font-bold tracking-widest uppercase mb-6 px-3 py-1 rounded-full border" style={{ color: chapterColor, borderColor: `${chapterColor}40`, backgroundColor: `${chapterColor}15` }}>
-                  Question
-                </div>
-                <p className="text-white text-xl font-bold text-center leading-snug" style={{ fontFamily: 'var(--font-display)' }}>
-                  {card.front}
-                </p>
-              </div>
+                Show all cards
+              </button>
+            </div>
+          ) : card ? (
+            <>
+              {/* Tap instruction */}
+              <p className="text-center text-white/25 text-xs mb-4 tracking-wide">
+                {face === 'front' ? 'TAP CARD TO REVEAL ANSWER' : 'TAP CARD TO FLIP BACK'}
+              </p>
 
-              {/* BACK */}
+              {/* Card flip container */}
               <div
-                style={{
-                  backfaceVisibility: 'hidden',
-                  WebkitBackfaceVisibility: 'hidden',
-                  transform: 'rotateY(180deg)',
-                  position: 'absolute',
-                  inset: 0,
-                  borderRadius: '20px',
-                  background: `linear-gradient(135deg, ${chapterColor}18, ${chapterColor}08)`,
-                  border: `1px solid ${chapterColor}60`,
-                  boxShadow: `0 0 50px ${chapterColor}20`,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '2rem',
-                  minHeight: '260px',
-                }}
+                onClick={flip}
+                className="cursor-pointer select-none"
+                style={{ perspective: '1000px' }}
               >
-                <div className="text-xs font-bold tracking-widest uppercase mb-5 px-3 py-1 rounded-full border" style={{ color: chapterColor, borderColor: `${chapterColor}60`, backgroundColor: `${chapterColor}25` }}>
-                  Answer
-                </div>
-                <div className="space-y-1.5 w-full max-w-lg">
-                  {lines.map((line, i) => (
-                    <p key={i} className={`text-center leading-relaxed ${line.startsWith('•') || /^\d\./.test(line) ? 'text-white/80 text-sm' : 'text-white font-semibold text-base'}`}>
-                      {line}
+                <div
+                  style={{
+                    transformStyle: 'preserve-3d',
+                    transform: face === 'back' ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                    transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)',
+                    position: 'relative',
+                    minHeight: '260px',
+                  }}
+                >
+                  {/* FRONT */}
+                  <div
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                      position: face === 'back' ? 'absolute' : 'relative',
+                      inset: 0,
+                      borderRadius: '20px',
+                      background: `linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03))`,
+                      border: `1px solid ${chapterColor}40`,
+                      boxShadow: `0 0 40px ${chapterColor}15`,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '2rem',
+                      minHeight: '260px',
+                    }}
+                  >
+                    <div className="text-xs font-bold tracking-widest uppercase mb-6 px-3 py-1 rounded-full border" style={{ color: chapterColor, borderColor: `${chapterColor}40`, backgroundColor: `${chapterColor}15` }}>
+                      Question
+                    </div>
+                    <p className="text-white text-xl font-bold text-center leading-snug" style={{ fontFamily: 'var(--font-display)' }}>
+                      {card.front}
                     </p>
-                  ))}
+                  </div>
+
+                  {/* BACK */}
+                  <div
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                      transform: 'rotateY(180deg)',
+                      position: 'absolute',
+                      inset: 0,
+                      borderRadius: '20px',
+                      background: `linear-gradient(135deg, ${chapterColor}18, ${chapterColor}08)`,
+                      border: `1px solid ${chapterColor}60`,
+                      boxShadow: `0 0 50px ${chapterColor}20`,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '2rem',
+                      minHeight: '260px',
+                    }}
+                  >
+                    <div className="text-xs font-bold tracking-widest uppercase mb-5 px-3 py-1 rounded-full border" style={{ color: chapterColor, borderColor: `${chapterColor}60`, backgroundColor: `${chapterColor}25` }}>
+                      Answer
+                    </div>
+                    <div className="space-y-1.5 w-full max-w-lg">
+                      {lines.map((line, i) => (
+                        <p key={i} className={`text-center leading-relaxed ${line.startsWith('•') || /^\d\./.test(line) ? 'text-white/80 text-sm' : 'text-white font-semibold text-base'}`}>
+                          {line}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Know it / Still learning buttons */}
-          {face === 'back' && (
-            <div className="flex gap-3 mt-5 justify-center">
-              <button
-                onClick={markUnknown}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all border ${isUnknown ? 'bg-red-500/30 border-red-400/60 text-red-300' : 'bg-white/5 border-white/10 text-white/60 hover:bg-red-500/20 hover:border-red-400/40 hover:text-red-300'}`}
-              >
-                <XCircle size={16} /> Still Learning
-              </button>
-              <button
-                onClick={markKnown}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all border ${isKnown ? 'bg-green-500/30 border-green-400/60 text-green-300' : 'bg-white/5 border-white/10 text-white/60 hover:bg-green-500/20 hover:border-green-400/40 hover:text-green-300'}`}
-              >
-                <CheckCircle size={16} /> Got It
-              </button>
-            </div>
-          )}
+              {/* Got It / Still Learning buttons — visible only on back face */}
+              {face === 'back' && (
+                <div className="flex gap-3 mt-5 justify-center">
+                  <button
+                    onClick={handleMarkUnknown}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all border ${isUnknown ? 'bg-red-500/30 border-red-400/60 text-red-300' : 'bg-white/5 border-white/10 text-white/60 hover:bg-red-500/20 hover:border-red-400/40 hover:text-red-300'}`}
+                  >
+                    <XCircle size={16} /> Still Learning
+                  </button>
+                  <button
+                    onClick={handleMarkKnown}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all border ${isKnown ? 'bg-green-500/30 border-green-400/60 text-green-300' : 'bg-white/5 border-white/10 text-white/60 hover:bg-green-500/20 hover:border-green-400/40 hover:text-green-300'}`}
+                  >
+                    <CheckCircle size={16} /> Got It
+                  </button>
+                </div>
+              )}
+            </>
+          ) : null}
+
         </div>
       </div>
 
