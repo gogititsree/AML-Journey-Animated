@@ -4,9 +4,10 @@ import QuizApp from "@/components/quiz/QuizApp";
 import MockTestApp from "@/components/quiz/MockTestApp";
 import FlashCardApp from "@/components/quiz/FlashCardApp";
 import CrosswordApp from "@/components/quiz/CrosswordApp";
-import { Play, BookOpen, ClipboardList, Layers, Grid3x3 } from 'lucide-react';
+import WordSearchApp from "@/components/quiz/WordSearchApp";
+import { Play, BookOpen, ClipboardList, Layers, Grid3x3, Search } from 'lucide-react';
 
-type Tab = 'video' | 'quiz' | 'mock' | 'flash' | 'crossword';
+type Tab = 'video' | 'quiz' | 'mock' | 'flash' | 'crossword' | 'wordsearch';
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('video');
@@ -55,6 +56,14 @@ export default function App() {
         >
           <Grid3x3 size={13} /> Crossword
         </button>
+        <button
+          onClick={() => setTab('wordsearch')}
+          className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+            tab === 'wordsearch' ? 'bg-cyan-500 text-white' : 'text-white/50 hover:text-white hover:bg-white/10'
+          }`}
+        >
+          <Search size={13} /> Word Search
+        </button>
       </div>
 
       {/* Content */}
@@ -73,6 +82,9 @@ export default function App() {
         </div>
         <div className={`absolute inset-0 overflow-y-auto ${tab === 'crossword' ? 'block' : 'hidden'}`}>
           <CrosswordApp />
+        </div>
+        <div className={`absolute inset-0 overflow-hidden ${tab === 'wordsearch' ? 'block' : 'hidden'}`}>
+          <WordSearchApp />
         </div>
       </div>
     </div>
