@@ -35,6 +35,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
   2. **200 Practice Questions** — Interactive MCQ quiz with 14 categories, shuffle, explanations, scoring (`src/components/quiz/QuizApp.tsx`, `src/data/quizQuestions.ts`)
   3. **5 Mock Tests** — 50 questions each, mapped to CAMS Study Guide chapters (`src/components/quiz/MockTestApp.tsx`, `src/data/mockTests.ts`)
   4. **200 Flashcards** — 20 cards per chapter (10 chapters), 3D flip animation, shuffle, "Got It / Still Learning" tracking (`src/components/quiz/FlashCardApp.tsx`, `src/data/flashCards.ts`)
+  5. **Crossword Puzzle** — algorithmically generated from 30 AML/CAMS terms, interactive grid with click/keyboard input, check/reveal, timer, clue panels (`src/components/quiz/CrosswordApp.tsx`, `src/utils/crosswordGenerator.ts`)
      - Test 1: Financial Crime Methods & Typologies (Ch. 1–2)
      - Test 2: Sector-Specific ML Risks (Ch. 2–4)
      - Test 3: Global Standards & Regulatory Frameworks (Ch. 5–6)

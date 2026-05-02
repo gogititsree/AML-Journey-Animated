@@ -3,9 +3,10 @@ import VideoWithControls from "@/components/video/VideoWithControls";
 import QuizApp from "@/components/quiz/QuizApp";
 import MockTestApp from "@/components/quiz/MockTestApp";
 import FlashCardApp from "@/components/quiz/FlashCardApp";
-import { Play, BookOpen, ClipboardList, Layers } from 'lucide-react';
+import CrosswordApp from "@/components/quiz/CrosswordApp";
+import { Play, BookOpen, ClipboardList, Layers, Grid3x3 } from 'lucide-react';
 
-type Tab = 'video' | 'quiz' | 'mock' | 'flash';
+type Tab = 'video' | 'quiz' | 'mock' | 'flash' | 'crossword';
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('video');
@@ -17,9 +18,7 @@ export default function App() {
         <button
           onClick={() => setTab('video')}
           className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
-            tab === 'video'
-              ? 'bg-amber-400 text-gray-900'
-              : 'text-white/50 hover:text-white hover:bg-white/10'
+            tab === 'video' ? 'bg-amber-400 text-gray-900' : 'text-white/50 hover:text-white hover:bg-white/10'
           }`}
         >
           <Play size={13} /> Animated Story
@@ -27,9 +26,7 @@ export default function App() {
         <button
           onClick={() => setTab('quiz')}
           className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
-            tab === 'quiz'
-              ? 'bg-amber-400 text-gray-900'
-              : 'text-white/50 hover:text-white hover:bg-white/10'
+            tab === 'quiz' ? 'bg-amber-400 text-gray-900' : 'text-white/50 hover:text-white hover:bg-white/10'
           }`}
         >
           <BookOpen size={13} /> 200 Practice Qs
@@ -37,9 +34,7 @@ export default function App() {
         <button
           onClick={() => setTab('mock')}
           className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
-            tab === 'mock'
-              ? 'bg-amber-400 text-gray-900'
-              : 'text-white/50 hover:text-white hover:bg-white/10'
+            tab === 'mock' ? 'bg-amber-400 text-gray-900' : 'text-white/50 hover:text-white hover:bg-white/10'
           }`}
         >
           <ClipboardList size={13} /> 5 Mock Tests
@@ -47,12 +42,18 @@ export default function App() {
         <button
           onClick={() => setTab('flash')}
           className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
-            tab === 'flash'
-              ? 'bg-amber-400 text-gray-900'
-              : 'text-white/50 hover:text-white hover:bg-white/10'
+            tab === 'flash' ? 'bg-amber-400 text-gray-900' : 'text-white/50 hover:text-white hover:bg-white/10'
           }`}
         >
           <Layers size={13} /> 200 Flashcards
+        </button>
+        <button
+          onClick={() => setTab('crossword')}
+          className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+            tab === 'crossword' ? 'bg-violet-500 text-white' : 'text-white/50 hover:text-white hover:bg-white/10'
+          }`}
+        >
+          <Grid3x3 size={13} /> Crossword
         </button>
       </div>
 
@@ -69,6 +70,9 @@ export default function App() {
         </div>
         <div className={`absolute inset-0 overflow-y-auto ${tab === 'flash' ? 'block' : 'hidden'}`}>
           <FlashCardApp />
+        </div>
+        <div className={`absolute inset-0 overflow-y-auto ${tab === 'crossword' ? 'block' : 'hidden'}`}>
+          <CrosswordApp />
         </div>
       </div>
     </div>
