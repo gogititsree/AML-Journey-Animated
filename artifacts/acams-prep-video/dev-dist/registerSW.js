@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/acams-prep-video/dev-sw.js?dev-sw', { scope: '/acams-prep-video/', type: 'classic' })

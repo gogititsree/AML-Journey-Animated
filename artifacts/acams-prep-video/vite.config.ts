@@ -64,7 +64,8 @@ export default defineConfig({
         ],
       },
       devOptions: {
-        enabled: false,
+        enabled: true,
+        type: "module",
       },
       manifest: {
         name: "ACAMS CAMS Certification Prep",
