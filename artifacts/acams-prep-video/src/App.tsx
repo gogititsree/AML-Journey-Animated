@@ -5,9 +5,10 @@ import MockTestApp from "@/components/quiz/MockTestApp";
 import FlashCardApp from "@/components/quiz/FlashCardApp";
 import CrosswordApp from "@/components/quiz/CrosswordApp";
 import WordSearchApp from "@/components/quiz/WordSearchApp";
-import { Play, BookOpen, ClipboardList, Layers, Grid3x3, Search } from 'lucide-react';
+import ExamApp from "@/components/quiz/ExamApp";
+import { Play, BookOpen, ClipboardList, Layers, Grid3x3, Search, GraduationCap } from 'lucide-react';
 
-type Tab = 'video' | 'quiz' | 'mock' | 'flash' | 'crossword' | 'wordsearch';
+type Tab = 'video' | 'quiz' | 'mock' | 'flash' | 'crossword' | 'wordsearch' | 'exam';
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('video');
@@ -64,6 +65,14 @@ export default function App() {
         >
           <Search size={13} /> Word Search
         </button>
+        <button
+          onClick={() => setTab('exam')}
+          className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+            tab === 'exam' ? 'bg-emerald-500 text-white' : 'text-white/50 hover:text-white hover:bg-white/10'
+          }`}
+        >
+          <GraduationCap size={13} /> Exam Simulator
+        </button>
       </div>
 
       {/* Content */}
@@ -85,6 +94,9 @@ export default function App() {
         </div>
         <div className={`absolute inset-0 overflow-hidden ${tab === 'wordsearch' ? 'block' : 'hidden'}`}>
           <WordSearchApp />
+        </div>
+        <div className={`absolute inset-0 overflow-hidden ${tab === 'exam' ? 'block' : 'hidden'}`}>
+          <ExamApp />
         </div>
       </div>
     </div>
