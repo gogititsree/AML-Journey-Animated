@@ -31,6 +31,7 @@
     "tailwind-merge": "catalog:",
     "tailwindcss": "catalog:",
     "three": "^0.182.0",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "vite-plugin-pwa": "^1.2.0"
   }
 }

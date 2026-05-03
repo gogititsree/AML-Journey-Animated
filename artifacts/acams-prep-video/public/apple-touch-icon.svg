@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <rect width="180" height="180" rx="28" fill="#0f172a"/>
+  <path d="M90 18 L138 36 L138 90 C138 120 118 146 90 158 C62 146 42 120 42 90 L42 36 Z" fill="#1e293b" stroke="#10b981" stroke-width="3"/>
+  <text x="90" y="85" font-family="Arial,sans-serif" font-weight="900" font-size="52" fill="#10b981" text-anchor="middle" dominant-baseline="middle">C</text>
+  <text x="90" y="128" font-family="Arial,sans-serif" font-weight="700" font-size="20" fill="#94a3b8" text-anchor="middle" dominant-baseline="middle">CAMS</text>
+</svg>
