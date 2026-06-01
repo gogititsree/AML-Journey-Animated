@@ -268,3 +268,14 @@ The application is fundamentally sound. All five tabs render, all data files pas
 ## Sign-Off
 
 This application is **ready for use** as a study tool. All critical content (questions, flashcards, crossword, mock tests) passes data integrity validation with zero duplicate IDs, no invalid answer indices, and correct question counts. Two medium/low defects were remediated during this QA pass. Three remaining low-severity items (no play/pause, two-step confirm, documentation mismatch) are documented for the backlog.
+
+---
+
+## Recent QA Update
+
+- Added root `pnpm test` script to run `artifacts/acams-prep-video` tests from the workspace root.
+- Added Vitest config and test setup for the ACAMS package.
+- Added a focused `QuizApp` regression test covering the quiz start flow, answer selection, and result reveal.
+- Fixed local build config requirements in `artifacts/acams-prep-video/vite.config.ts` and `artifacts/mockup-sandbox/vite.config.ts` so both packages build without requiring manual `PORT` or `BASE_PATH` env vars.
+- Fixed TypeScript config for the ACAMS package by enabling DOM libs and Vitest globals.
+- Pushed all QA changes to `origin main`.
