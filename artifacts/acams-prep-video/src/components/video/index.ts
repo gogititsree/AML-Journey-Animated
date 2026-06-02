@@ -1,1 +1,1 @@
-export { ReplitLoadingScene } from './ReplitLoadingScene';
+export { LoadingScene } from './LoadingScene';

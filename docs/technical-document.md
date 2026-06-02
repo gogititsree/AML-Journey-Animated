@@ -310,7 +310,7 @@ pnpm install
 ```bash
 pnpm --filter @workspace/acams-prep-video run dev
 ```
-Vite starts on the port specified by the `PORT` environment variable. In the Replit environment, the port is assigned automatically by the workflow runner.
+Vite starts on the port specified by the `PORT` environment variable.
 
 ### 7.4 Production Build
 ```bash
@@ -328,7 +328,7 @@ Note: The project tsconfig currently lacks `"lib": ["dom"]` in some packages, pr
 ### 7.6 Vite Configuration
 Key settings in `vite.config.ts`:
 - `base`: Set to the artifact's preview path (`/acams-prep-video/`) for correct asset resolution through the shared reverse proxy
-- `server.allowedHosts: true`: Required for the Replit proxied iframe preview
+- `server.allowedHosts: true`: Required when Vite is accessed through a proxied preview host
 - Path alias `@` → `./src`
 
 ---
@@ -337,7 +337,7 @@ Key settings in `vite.config.ts`:
 
 The application is served at path `/acams-prep-video/` through a shared reverse proxy. The proxy routes by path prefix; no path rewriting occurs, so all internal asset references must be relative or prefixed with the base path. Vite's `base` config option handles this automatically.
 
-In production (deployed), the artifact is served over HTTPS on the Replit-assigned `.replit.app` subdomain.
+In production (deployed), the artifact is served over HTTPS on the configured deployment domain.
 
 ---
 

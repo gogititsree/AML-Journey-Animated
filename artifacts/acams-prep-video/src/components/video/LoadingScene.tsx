@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 
-export function ReplitLoadingScene() {
+export function LoadingScene() {
   return (
     <motion.div
       className="absolute inset-0 flex flex-col items-center justify-center bg-[#0D101E]"
@@ -28,7 +28,7 @@ export function ReplitLoadingScene() {
             ease: "easeInOut"
           }}
         >
-          <ReplitLogo size={120} />
+          <AppLogo size={120} />
         </motion.div>
 
         <motion.div
@@ -53,7 +53,7 @@ export function ReplitLoadingScene() {
   );
 }
 
-function ReplitLogo({ size = 64, className = '' }: { size?: number; className?: string }) {
+function AppLogo({ size = 64, className = '' }: { size?: number; className?: string }) {
   return (
     <svg
       width={size}
@@ -102,4 +102,4 @@ function LoadingDots() {
   );
 }
 
-export default ReplitLoadingScene;
+export default LoadingScene;
