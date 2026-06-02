@@ -26,6 +26,8 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Build app
+        env:
+          BASE_PATH: /AML-Journey-Animated/
         run: pnpm --dir artifacts/acams-prep-video build
 
       - name: Upload Pages artifact
