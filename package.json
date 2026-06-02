@@ -5,6 +5,7 @@
   "scripts": {
     "preinstall": "node -e \"const fs=require('fs'); ['package-lock.json','yarn.lock'].forEach(f=>{try{fs.unlinkSync(f)}catch(e){}}); const ua=process.env.npm_config_user_agent||process.env.npm_execpath||''; if(!ua.includes('pnpm')){console.error('Use pnpm instead'); process.exit(1);}\"",
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
+    "deploy": "pnpm --dir artifacts/acams-prep-video build && echo 'Push main to trigger GitHub Pages deployment'",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
     "test": "pnpm --dir artifacts/acams-prep-video test",
