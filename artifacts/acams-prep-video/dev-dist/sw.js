@@ -79,13 +79,13 @@ define(['./workbox-f224eed2'], (function (workbox) { 'use strict';
    */
   workbox.precacheAndRoute([{
     "url": "registerSW.js",
-    "revision": "ba9acb4987800bc7ac51927ea9c5e3f5"
+    "revision": "3ca0b8505b4bec776b69afdba2768812"
   }, {
-    "url": "/acams-prep-video/index.html",
-    "revision": "0.igvgsae0rn4"
+    "url": "/index.html",
+    "revision": "0.irertbtslv"
   }], {});
   workbox.cleanupOutdatedCaches();
-  workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("/acams-prep-video/index.html"), {
+  workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("/index.html"), {
     allowlist: [/^\/$/],
     denylist: [/^\/api/]
   }));
