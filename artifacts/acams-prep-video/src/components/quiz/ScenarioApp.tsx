@@ -1,6 +1,10 @@
 import { useState, useCallback, useMemo } from 'react';
 import { scenarioQuestions } from '@/data/scenarioQuestions';
+import { scenarioQuestions2 } from '@/data/scenarioQuestions2';
+import { scenarioQuestions3 } from '@/data/scenarioQuestions3';
 import type { QuizQuestion } from '@/data/quizQuestions';
+
+const allScenarioQuestions: QuizQuestion[] = [...scenarioQuestions, ...scenarioQuestions2, ...scenarioQuestions3];
 import { CheckCircle, XCircle, ChevronRight, ChevronLeft, RotateCcw, Trophy, Shuffle, AlertTriangle, Target } from 'lucide-react';
 
 type Mode = 'menu' | 'quiz' | 'results';
@@ -32,7 +36,7 @@ export default function ScenarioApp() {
   const [shuffled, setShuffled] = useState(true);
 
   const startQuiz = useCallback(() => {
-    const pool = shuffled ? shuffleArray(scenarioQuestions) : [...scenarioQuestions];
+    const pool = shuffled ? shuffleArray(allScenarioQuestions) : [...allScenarioQuestions];
     setQuestions(pool);
     setCurrentIndex(0);
     setAnswers({});
@@ -110,6 +114,16 @@ export default function ScenarioApp() {
                 'Virtual Assets',
                 'Terrorist Financing & Sanctions',
                 'Investigations & Compliance',
+                'Real Estate & Professional Services',
+                'Layering Techniques',
+                'Internal Controls',
+                'High-Risk Industries',
+                'International Standards',
+                'Fraud–ML Nexus',
+                'Customer Behavior Red Flags',
+                'Digital Banking & Fintech',
+                'Asset Recovery',
+                'Advanced Judgment Calls',
               ].map(tag => (
                 <span key={tag} className="px-3 py-1 rounded-full text-xs font-medium text-white/50 border border-white/10 bg-white/5">
                   {tag}
@@ -119,11 +133,11 @@ export default function ScenarioApp() {
 
             <div className="grid grid-cols-3 gap-4 mb-8">
               <div className="rounded-xl p-4 border" style={{ background: ACCENT_DIM, borderColor: ACCENT_BORDER }}>
-                <div className="text-3xl font-black mb-1" style={{ color: ACCENT }}>100</div>
+                <div className="text-3xl font-black mb-1" style={{ color: ACCENT }}>200</div>
                 <div className="text-white/50 text-xs">Scenario Questions</div>
               </div>
               <div className="rounded-xl p-4 border border-white/10 bg-white/5">
-                <div className="text-3xl font-black text-white mb-1">10</div>
+                <div className="text-3xl font-black text-white mb-1">20</div>
                 <div className="text-white/50 text-xs">Topic Areas</div>
               </div>
               <div className="rounded-xl p-4 border border-white/10 bg-white/5">
@@ -167,7 +181,7 @@ export default function ScenarioApp() {
               className="px-14 py-4 rounded-xl font-black text-lg text-white transition-all shadow-lg active:scale-95"
               style={{ background: ACCENT, boxShadow: '0 8px 30px rgba(239,68,68,0.3)' }}
             >
-              Start 100 Scenarios
+              Start 200 Scenarios
             </button>
           </div>
         </div>
