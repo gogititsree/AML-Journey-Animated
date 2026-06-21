@@ -6,9 +6,10 @@ import FlashCardApp from "@/components/quiz/FlashCardApp";
 import CrosswordApp from "@/components/quiz/CrosswordApp";
 import WordSearchApp from "@/components/quiz/WordSearchApp";
 import ExamApp from "@/components/quiz/ExamApp";
-import { Play, BookOpen, ClipboardList, Layers, Grid3x3, Search, GraduationCap } from 'lucide-react';
+import { Play, BookOpen, ClipboardList, Layers, Grid3x3, Search, GraduationCap, Target } from 'lucide-react';
+import ScenarioApp from "@/components/quiz/ScenarioApp";
 
-type Tab = 'video' | 'quiz' | 'mock' | 'flash' | 'crossword' | 'wordsearch' | 'exam';
+type Tab = 'video' | 'quiz' | 'mock' | 'flash' | 'crossword' | 'wordsearch' | 'exam' | 'scenario';
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('video');
@@ -73,6 +74,14 @@ export default function App() {
         >
           <GraduationCap size={13} /> Exam Simulator
         </button>
+        <button
+          onClick={() => setTab('scenario')}
+          className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+            tab === 'scenario' ? 'bg-red-600 text-white' : 'text-white/50 hover:text-white hover:bg-white/10'
+          }`}
+        >
+          <Target size={13} /> Scenario Qs
+        </button>
       </div>
 
       {/* Content */}
@@ -97,6 +106,9 @@ export default function App() {
         </div>
         <div className={`absolute inset-0 overflow-hidden ${tab === 'exam' ? 'block' : 'hidden'}`}>
           <ExamApp />
+        </div>
+        <div className={`absolute inset-0 overflow-y-auto ${tab === 'scenario' ? 'block' : 'hidden'}`}>
+          <ScenarioApp />
         </div>
       </div>
     </div>
