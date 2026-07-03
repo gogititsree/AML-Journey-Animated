@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { CASE_SCENARIOS, type CaseScenario } from '@/data/caseScenarios';
+import { scenarioQuestions } from '@/data/scenarioQuestions';
+import ScenarioApp from '@/components/quiz/ScenarioApp';
 import {
   AlertTriangle, Award, CheckCircle2, ChevronLeft, ChevronRight,
-  FileSearch, Flag, FolderOpen, Lightbulb, Scale, XCircle,
+  FileSearch, Flag, FolderOpen, Lightbulb, Scale, Target, XCircle, Zap,
 } from 'lucide-react';
 
 type Stage = 'briefing' | 'redflags' | 'decisions' | 'debrief';
@@ -329,11 +331,16 @@ function CaseRunner({ scenario, onExit }: { scenario: CaseScenario; onExit: () =
   );
 }
 
-// ─── Case list ───────────────────────────────────────────────────────
+// ─── Scenario hub: rapid-fire questions + deep-dive case files ───────
 
 export default function CaseScenariosApp() {
   const [activeCase, setActiveCase] = useState<number | null>(null);
   const [runKey, setRunKey] = useState(0);
+  const [rapidFire, setRapidFire] = useState(false);
+
+  if (rapidFire) {
+    return <ScenarioApp onExit={() => setRapidFire(false)} />;
+  }
 
   const scenario = CASE_SCENARIOS.find(s => s.id === activeCase);
   if (scenario) {
@@ -351,18 +358,43 @@ export default function CaseScenariosApp() {
       <div className="px-8 pt-10 pb-6 border-b border-white/10">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-3 mb-2">
-            <FolderOpen className="text-red-400" size={26} />
-            <span className="text-red-400 text-sm font-semibold tracking-widest uppercase">Investigation Room</span>
+            <Target className="text-red-400" size={26} />
+            <span className="text-red-400 text-sm font-semibold tracking-widest uppercase">Scenario Training</span>
           </div>
-          <h1 className="text-4xl font-black text-white mb-1" style={{ fontFamily: 'var(--font-display)' }}>Case Files</h1>
+          <h1 className="text-4xl font-black text-white mb-1" style={{ fontFamily: 'var(--font-display)' }}>Scenarios</h1>
           <p className="text-white/50 text-base">
-            {CASE_SCENARIOS.length} realistic cases. Read the briefing, spot the red flags, make the calls a real analyst would face — then compare against the expert debrief.
+            Two ways to train: rapid-fire questions for exam speed, deep-dive case files for investigator judgment.
           </p>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-8 py-6">
         <div className="max-w-3xl mx-auto space-y-3 pb-8">
+          {/* Rapid-fire mode */}
+          <button
+            onClick={() => setRapidFire(true)}
+            className="w-full flex items-start gap-4 p-6 rounded-2xl border border-red-500/30 bg-red-500/8 hover:bg-red-500/12 transition-all text-left group"
+          >
+            <div className="shrink-0 w-12 h-12 rounded-xl bg-red-500/15 border border-red-500/40 flex items-center justify-center">
+              <Zap size={22} className="text-red-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-white font-bold text-base mb-1">Rapid Fire — {scenarioQuestions.length} Scenario Questions</div>
+              <div className="text-white/50 text-sm leading-relaxed">
+                Quick-fire multiple choice across 10 topic areas — structuring, SAR decisions, KYC judgment, TBML, sanctions and more. Build exam speed.
+              </div>
+              <div className="text-red-400 text-xs font-bold mt-2">Start quizzing →</div>
+            </div>
+            <ChevronRight size={18} className="shrink-0 mt-3 text-white/20 group-hover:text-white/50 transition-colors" />
+          </button>
+
+          {/* Case files section */}
+          <div className="flex items-center gap-2 pt-4 pb-1">
+            <FolderOpen size={16} className="text-red-400" />
+            <span className="text-white font-bold text-sm tracking-wide">Deep-Dive Case Files</span>
+            <span className="text-white/30 text-xs">· briefing → red flags → decisions → debrief</span>
+          </div>
+
           <div className="rounded-2xl border border-white/10 bg-white/4 px-6 py-4 flex items-start gap-3">
             <AlertTriangle size={17} className="text-amber-400 shrink-0 mt-0.5" />
             <p className="text-white/60 text-sm leading-relaxed">

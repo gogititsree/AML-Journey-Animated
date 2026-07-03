@@ -6,13 +6,12 @@ import FlashCardApp from "@/components/quiz/FlashCardApp";
 import CrosswordApp from "@/components/quiz/CrosswordApp";
 import WordSearchApp from "@/components/quiz/WordSearchApp";
 import ExamApp from "@/components/quiz/ExamApp";
-import ScenarioApp from "@/components/quiz/ScenarioApp";
 import FatfApp from "@/components/quiz/FatfApp";
 import InterviewPrepApp from "@/components/quiz/InterviewPrepApp";
 import CaseScenariosApp from "@/components/quiz/CaseScenariosApp";
-import { Play, BookOpen, ClipboardList, Layers, Grid3x3, Search, GraduationCap, Target, Dices, Briefcase, FolderOpen } from 'lucide-react';
+import { Play, BookOpen, ClipboardList, Layers, Grid3x3, Search, GraduationCap, Target, Dices, Briefcase } from 'lucide-react';
 
-type Tab = 'video' | 'quiz' | 'mock' | 'flash' | 'crossword' | 'wordsearch' | 'exam' | 'scenario' | 'fatf' | 'interview' | 'cases';
+type Tab = 'video' | 'quiz' | 'mock' | 'flash' | 'crossword' | 'wordsearch' | 'exam' | 'fatf' | 'interview' | 'scenarios';
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('video');
@@ -78,14 +77,6 @@ export default function App() {
           <GraduationCap size={13} /> Exam Simulator
         </button>
         <button
-          onClick={() => setTab('scenario')}
-          className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
-            tab === 'scenario' ? 'bg-red-600 text-white' : 'text-white/50 hover:text-white hover:bg-white/10'
-          }`}
-        >
-          <Target size={13} /> Scenario Qs
-        </button>
-        <button
           onClick={() => setTab('fatf')}
           className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
             tab === 'fatf' ? 'bg-orange-500 text-white' : 'text-white/50 hover:text-white hover:bg-white/10'
@@ -102,12 +93,12 @@ export default function App() {
           <Briefcase size={13} /> Interview Prep
         </button>
         <button
-          onClick={() => setTab('cases')}
+          onClick={() => setTab('scenarios')}
           className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
-            tab === 'cases' ? 'bg-rose-500 text-white' : 'text-white/50 hover:text-white hover:bg-white/10'
+            tab === 'scenarios' ? 'bg-rose-500 text-white' : 'text-white/50 hover:text-white hover:bg-white/10'
           }`}
         >
-          <FolderOpen size={13} /> Case Files
+          <Target size={13} /> Scenarios
         </button>
       </div>
 
@@ -134,16 +125,13 @@ export default function App() {
         <div className={`absolute inset-0 overflow-hidden ${tab === 'exam' ? 'block' : 'hidden'}`}>
           <ExamApp />
         </div>
-        <div className={`absolute inset-0 overflow-y-auto ${tab === 'scenario' ? 'block' : 'hidden'}`}>
-          <ScenarioApp />
-        </div>
         <div className={`absolute inset-0 overflow-y-auto ${tab === 'fatf' ? 'block' : 'hidden'}`}>
           <FatfApp />
         </div>
         <div className={`absolute inset-0 overflow-y-auto ${tab === 'interview' ? 'block' : 'hidden'}`}>
           <InterviewPrepApp />
         </div>
-        <div className={`absolute inset-0 overflow-y-auto ${tab === 'cases' ? 'block' : 'hidden'}`}>
+        <div className={`absolute inset-0 overflow-y-auto ${tab === 'scenarios' ? 'block' : 'hidden'}`}>
           <CaseScenariosApp />
         </div>
       </div>

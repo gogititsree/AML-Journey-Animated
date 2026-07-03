@@ -23,7 +23,11 @@ const ACCENT = '#ef4444';
 const ACCENT_DIM = 'rgba(239,68,68,0.15)';
 const ACCENT_BORDER = 'rgba(239,68,68,0.35)';
 
-export default function ScenarioApp() {
+interface ScenarioAppProps {
+  onExit?: () => void;
+}
+
+export default function ScenarioApp({ onExit }: ScenarioAppProps = {}) {
   const [mode, setMode] = useState<Mode>('menu');
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -86,6 +90,11 @@ export default function ScenarioApp() {
       <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(135deg, #0f0a0a 0%, #1a0d0d 50%, #160a0a 100%)', fontFamily: 'var(--font-body)' }}>
         <div className="px-8 pt-10 pb-6 border-b border-red-900/30">
           <div className="max-w-4xl mx-auto">
+            {onExit && (
+              <button onClick={onExit} className="flex items-center gap-1.5 text-white/40 hover:text-white transition-colors text-sm mb-5">
+                <ChevronLeft size={16} /> Scenario Hub
+              </button>
+            )}
             <div className="flex items-center gap-3 mb-3">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: ACCENT_DIM, border: `1px solid ${ACCENT_BORDER}` }}>
                 <Target size={16} style={{ color: ACCENT }} />
