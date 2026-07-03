@@ -6,10 +6,13 @@ import FlashCardApp from "@/components/quiz/FlashCardApp";
 import CrosswordApp from "@/components/quiz/CrosswordApp";
 import WordSearchApp from "@/components/quiz/WordSearchApp";
 import ExamApp from "@/components/quiz/ExamApp";
-import { Play, BookOpen, ClipboardList, Layers, Grid3x3, Search, GraduationCap, Target } from 'lucide-react';
 import ScenarioApp from "@/components/quiz/ScenarioApp";
+import FatfApp from "@/components/quiz/FatfApp";
+import InterviewPrepApp from "@/components/quiz/InterviewPrepApp";
+import CaseScenariosApp from "@/components/quiz/CaseScenariosApp";
+import { Play, BookOpen, ClipboardList, Layers, Grid3x3, Search, GraduationCap, Target, Dices, Briefcase, FolderOpen } from 'lucide-react';
 
-type Tab = 'video' | 'quiz' | 'mock' | 'flash' | 'crossword' | 'wordsearch' | 'exam' | 'scenario';
+type Tab = 'video' | 'quiz' | 'mock' | 'flash' | 'crossword' | 'wordsearch' | 'exam' | 'scenario' | 'fatf' | 'interview' | 'cases';
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('video');
@@ -82,6 +85,30 @@ export default function App() {
         >
           <Target size={13} /> Scenario Qs
         </button>
+        <button
+          onClick={() => setTab('fatf')}
+          className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+            tab === 'fatf' ? 'bg-orange-500 text-white' : 'text-white/50 hover:text-white hover:bg-white/10'
+          }`}
+        >
+          <Dices size={13} /> FATF 40
+        </button>
+        <button
+          onClick={() => setTab('interview')}
+          className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+            tab === 'interview' ? 'bg-teal-500 text-white' : 'text-white/50 hover:text-white hover:bg-white/10'
+          }`}
+        >
+          <Briefcase size={13} /> Interview Prep
+        </button>
+        <button
+          onClick={() => setTab('cases')}
+          className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+            tab === 'cases' ? 'bg-rose-500 text-white' : 'text-white/50 hover:text-white hover:bg-white/10'
+          }`}
+        >
+          <FolderOpen size={13} /> Case Files
+        </button>
       </div>
 
       {/* Content */}
@@ -109,6 +136,15 @@ export default function App() {
         </div>
         <div className={`absolute inset-0 overflow-y-auto ${tab === 'scenario' ? 'block' : 'hidden'}`}>
           <ScenarioApp />
+        </div>
+        <div className={`absolute inset-0 overflow-y-auto ${tab === 'fatf' ? 'block' : 'hidden'}`}>
+          <FatfApp />
+        </div>
+        <div className={`absolute inset-0 overflow-y-auto ${tab === 'interview' ? 'block' : 'hidden'}`}>
+          <InterviewPrepApp />
+        </div>
+        <div className={`absolute inset-0 overflow-y-auto ${tab === 'cases' ? 'block' : 'hidden'}`}>
+          <CaseScenariosApp />
         </div>
       </div>
     </div>
